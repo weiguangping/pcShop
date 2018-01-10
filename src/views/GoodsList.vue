@@ -15,25 +15,16 @@
             <span class="sortby">Sort by:</span>
             <a href="javascript:void(0)" class="default cur">Default</a>
             <a href="javascript:void(0)" class="price">Price <svg class="icon icon-arrow-short"><use xlink:href="#icon-arrow-short"></use></svg></a>
-            <a href="javascript:void(0)" class="filterby stopPop">Filter by</a>
+            <a href="javascript:void(0)" class="filterby stopPop" @click="showPrice">Filter by</a>
           </div>
           <div class="accessory-result">
             <!-- filter -->
-            <div class="filter stopPop" id="filter">
+            <div class="filter stopPop" id="filter" :class="filter?'filterby-show':''">
               <dl class="filter-price">
                 <dt>Price:</dt>
-                <dd><a href="javascript:void(0)">All</a></dd>
-                <dd>
-                  <a href="javascript:void(0)">0 - 100</a>
-                </dd>
-                <dd>
-                  <a href="javascript:void(0)">100 - 500</a>
-                </dd>
-                <dd>
-                  <a href="javascript:void(0)">500 - 1000</a>
-                </dd>
-                <dd>
-                  <a href="javascript:void(0)">1000 - 2000</a>
+                <dd><a href="javascript:void(0)" :class="priceChecked=='0'?'cur':''" @click='priceClick(0)'>All</a></dd>
+                <dd v-for="item in price" :key="item.id">
+                  <a href="javascript:void(0)" @click='priceClick(item.id)' :class="priceChecked==item.id?'cur':''">{{item.startprice}}={{item.endprice}}</a>
                 </dd>
               </dl>
             </div>
@@ -42,49 +33,13 @@
             <div class="accessory-list-wrap">
               <div class="accessory-list col-4">
                 <ul>
-                  <li>
+                  <li v-for="item in goodList" :key="item.id">
                     <div class="pic">
-                      <a href="#"><img src="static/1.jpg" alt=""></a>
+                      <a href="#"><img v-lazy="'static/'+item.prodcutImg" alt=""></a>
                     </div>
                     <div class="main">
-                      <div class="name">XX</div>
-                      <div class="price">999</div>
-                      <div class="btn-area">
-                        <a href="javascript:;" class="btn btn--m">加入购物车</a>
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div class="pic">
-                      <a href="#"><img src="static/2.jpg" alt=""></a>
-                    </div>
-                    <div class="main">
-                      <div class="name">XX</div>
-                      <div class="price">1000</div>
-                      <div class="btn-area">
-                        <a href="javascript:;" class="btn btn--m">加入购物车</a>
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div class="pic">
-                      <a href="#"><img src="static/3.jpg" alt=""></a>
-                    </div>
-                    <div class="main">
-                      <div class="name">XX</div>
-                      <div class="price">500</div>
-                      <div class="btn-area">
-                        <a href="javascript:;" class="btn btn--m">加入购物车</a>
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div class="pic">
-                      <a href="#"><img src="static/4.jpg" alt=""></a>
-                    </div>
-                    <div class="main">
-                      <div class="name">XX</div>
-                      <div class="price">2499</div>
+                      <div class="name">{{item.productName}}</div>
+                      <div class="price">{{item.productPrice}}</div>
                       <div class="btn-area">
                         <a href="javascript:;" class="btn btn--m">加入购物车</a>
                       </div>
@@ -127,12 +82,50 @@
     </div>
 </template>
 <script>
-  import  './../assets/css/base.css'
-  import  './../assets/css/product.css'
-    export default{
-        data(){
+    import './../assets/css/base.css'
+    import './../assets/css/product.css'
+    export default {
+        data() {
             return {
-
+                goodList: [],
+                priceChecked: 0,
+                price: [{
+                    id: 1,
+                    startprice: 0,
+                    endprice: 100
+                }, {
+                    id: 2,
+                    startprice: 100,
+                    endprice: 500
+                }, {
+                    id: 3,
+                    startprice: 500,
+                    endprice: 1000
+                }, {
+                    id: 4,
+                    startprice: 1000,
+                    endprice: 2000
+                }],
+                filter: false
+            };
+        },
+        created() {
+            this.$ajax
+                .get("/static/mock/goods.json")
+                .then(res => {
+                    this.goodList = res.data.result;
+                })
+                .catch(error => {
+                    // console.log(error);
+                });
+        },
+        methods: {
+            priceClick(id) {
+                this.priceChecked = id;
+                this.filter = false;
+            },
+            showPrice() {
+                this.filter = true;
             }
         }
     }
