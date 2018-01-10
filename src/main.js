@@ -12,29 +12,29 @@ import '../src/assets/css/login.css'
 import fastclick from 'fastclick'
 fastclick.attach(document.body)
 Vue.use(VueLazyLoad, {
-    loading: '/static/loading-svg/loading-bars.svg'
+  loading: '/static/loading-svg/loading-bars.svg'
 })
 
 Vue.component('myHeader', myHeader)
-    // Axios:挂载原型
+// Axios:挂载原型
 Vue.prototype.$ajax = Axios
 Axios.defaults.baseURL = ''
 Axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
-    // Axios:拦截器操作loadding
-Axios.interceptors.request.use(function(config) {
-    return config
+// Axios:拦截器操作loadding
+Axios.interceptors.request.use(function (config) {
+  return config
 })
-Axios.interceptors.response.use(function(config) {
-    return config
+Axios.interceptors.response.use(function (config) {
+  return config
 })
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
 new Vue({
-    el: '#app',
-    router,
-    template: '<App/>',
-    components: {
-        App
-    }
+  el: '#app',
+  router,
+  template: '<App/>',
+  components: {
+    App
+  }
 })

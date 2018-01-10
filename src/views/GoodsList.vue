@@ -85,48 +85,48 @@
     import './../assets/css/base.css'
     import './../assets/css/product.css'
     export default {
-        data() {
-            return {
-                goodList: [],
-                priceChecked: 0,
-                price: [{
-                    id: 1,
-                    startprice: 0,
-                    endprice: 100
-                }, {
-                    id: 2,
-                    startprice: 100,
-                    endprice: 500
-                }, {
-                    id: 3,
-                    startprice: 500,
-                    endprice: 1000
-                }, {
-                    id: 4,
-                    startprice: 1000,
-                    endprice: 2000
-                }],
-                filter: false
-            };
-        },
-        created() {
-            this.$ajax
-                .get("/static/mock/goods.json")
+      data () {
+        return {
+          goodList: [],
+          priceChecked: 0,
+          price: [{
+            id: 1,
+            startprice: 0,
+            endprice: 100
+          }, {
+            id: 2,
+            startprice: 100,
+            endprice: 500
+          }, {
+            id: 3,
+            startprice: 500,
+            endprice: 1000
+          }, {
+            id: 4,
+            startprice: 1000,
+            endprice: 2000
+          }],
+          filter: false
+        }
+  },
+      created () {
+        this.$ajax
+                .get('/static/mock/goods.json')
                 .then(res => {
-                    this.goodList = res.data.result;
+                  this.goodList = res.data.result
                 })
                 .catch(error => {
                     // console.log(error);
-                });
+                })
+  },
+      methods: {
+        priceClick (id) {
+          this.priceChecked = id
+          this.filter = false
         },
-        methods: {
-            priceClick(id) {
-                this.priceChecked = id;
-                this.filter = false;
-            },
-            showPrice() {
-                this.filter = true;
-            }
+        showPrice () {
+          this.filter = true
         }
+      }
     }
 </script>
