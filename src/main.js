@@ -5,6 +5,7 @@ import App from './App'
 import router from './router'
 import Axios from 'axios'
 import myHeader from '@/components/header'
+import myFooter from '@/components/footer'
 import VueLazyLoad from 'vue-lazyload'
 
 import '../src/assets/css/login.css'
@@ -16,6 +17,7 @@ Vue.use(VueLazyLoad, {
 })
 
 Vue.component('myHeader', myHeader)
+Vue.component('myFooter', myFooter)
 // Axios:挂载原型
 Vue.prototype.$ajax = Axios
 Axios.defaults.baseURL = ''
