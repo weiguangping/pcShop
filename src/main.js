@@ -20,7 +20,7 @@ Vue.component('myHeader', myHeader)
 Vue.component('myFooter', myFooter)
 // Axios:挂载原型
 Vue.prototype.$ajax = Axios
-Axios.defaults.baseURL = ''
+Axios.defaults.baseURL = 'http://localhost:3000/api'
 Axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 // Axios:拦截器操作loadding
 Axios.interceptors.request.use(function (config) {

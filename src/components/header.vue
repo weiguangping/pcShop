@@ -19,7 +19,7 @@
           <div class="navbar-menu-container">
             <!--<a href="/" class="navbar-link">我的账户</a>-->
             <span class="navbar-link"></span>
-            <a href="javascript:void(0)" class="navbar-link">Login</a>
+            <a href="javascript:void(0)" class="navbar-link" @click='login'>Login</a>
             <a href="javascript:void(0)" class="navbar-link">Logout</a>
             <div class="navbar-cart-container">
               <span class="navbar-cart-count"></span>
@@ -32,6 +32,34 @@
           </div>
         </div>
       </div>
+      <div class="md-modal modal-msg md-modal-transition" :class="mdshow?'md-show':''">
+        <div class="md-modal-inner">
+          <div class="md-top">
+            <div class="md-title">Login in</div>
+            <button type="" class="md-close" @click='closemdShow'>Close</button>
+          </div>
+          <div class="md-content">
+            <div class="confirm-tips">
+              <div class="error-wrap" v-show="errorTip">
+                <span class="error error-show">用户名或者密码错误</span>
+              </div>
+              <ul>
+                <li class="regi_form_input">
+                  <i class="icon IconPeople"></i>
+                  <input type="" v-model="userName" name="" value="" class=" regi_login_input">
+                </li>
+                <li class="regi_form_input noMargin">
+                  <i class="icon IconPwd"></i>
+                  <input type="password" v-model="userPwd" name="" value="" class=" regi_login_input">
+                </li>
+              </ul>
+            </div>
+            <div class="login-wrap">
+              <a href="javascript:;" class="btn-login">登录</a>
+            </div>
+          </div>
+        </div>
+      </div>
     </header>
   </div>
 </template>
@@ -39,7 +67,32 @@
 <script>
   export default {
     data () {
-      return {}
+      return {
+        mdshow: false,
+        userName: '',
+        userPwd: '',
+        errorTip: false
+      }
+    },
+    methods: {
+      closemdShow () {
+        this.mdshow = false
+      },
+      login () {
+        this.mdshow = true
+        this.$ajax.post('/users/login', {
+          userNmae: this.userName,
+          userPwd: this.userPwd
+        }).then((resonse) => {
+          console.log(resonse)
+          let res = resonse.data
+          if (res.status === '0') {
+            this.errorTip = false
+          } else {
+            this.errorTip = true
+          }
+        })
+      }
     }
   }
 </script>
