@@ -18,9 +18,9 @@
         <div class="navbar-right-container" style="display: flex;">
           <div class="navbar-menu-container">
             <!--<a href="/" class="navbar-link">我的账户</a>-->
-            <span class="navbar-link"></span>
-            <a href="javascript:void(0)" class="navbar-link" @click='login'>Login</a>
-            <a href="javascript:void(0)" class="navbar-link">Logout</a>
+            <span class="navbar-link" v-if="nickName">{{nickName}}</span>
+            <a href="javascript:void(0)" class="navbar-link" @click='loginShow' v-if="!nickName">Login</a>
+            <a href="javascript:void(0)" class="navbar-link" @click='logout'>Logout</a>
             <div class="navbar-cart-container">
               <span class="navbar-cart-count"></span>
               <a class="navbar-link navbar-cart-link" href="/#/cart">
@@ -36,7 +36,7 @@
         <div class="md-modal-inner">
           <div class="md-top">
             <div class="md-title">Login in</div>
-            <button type="" class="md-close" @click='closemdShow'>Close</button>
+            <button type="" class="md-close" @click='loginHide'>Close</button>
           </div>
           <div class="md-content">
             <div class="confirm-tips">
@@ -50,12 +50,12 @@
                 </li>
                 <li class="regi_form_input noMargin">
                   <i class="icon IconPwd"></i>
-                  <input type="password" v-model="userPwd" name="" value="" class=" regi_login_input">
+                  <input type="password" v-model="userPwd" name="" value="" class=" regi_login_input" @keyup.enter="login">
                 </li>
               </ul>
             </div>
             <div class="login-wrap">
-              <a href="javascript:;" class="btn-login">登录</a>
+              <a href="javascript:;" class="btn-login" @click='login'>登录</a>
             </div>
           </div>
         </div>
@@ -71,25 +71,56 @@
         mdshow: false,
         userName: '',
         userPwd: '',
-        errorTip: false
+        errorTip: false,
+        nickName: ''
       }
     },
+    mounted () {
+      this.checkLogin()
+    },
     methods: {
-      closemdShow () {
+      checkLogin () {
+        this.$ajax.get('/api/users/checkLogin').then(responce => {
+          let res = responce.data
+          if (res.status === '0') {
+            this.nickName = res.result
+          }
+        })
+      },
+      loginHide () {
         this.mdshow = false
       },
-      login () {
+      loginShow () {
         this.mdshow = true
-        this.$ajax.post('/users/login', {
-          userNmae: this.userName,
+      },
+      login () {
+        if (!this.userName || !this.userPwd) {
+          this.errorTip = true
+          return
+        }
+        this.mdshow = true
+        this.$ajax.post('/api/users/login', {
+          userName: this.userName,
           userPwd: this.userPwd
-        }).then((resonse) => {
-          console.log(resonse)
-          let res = resonse.data
+        }).then((response) => {
+          console.log(response)
+          let res = response.data
           if (res.status === '0') {
-            this.errorTip = false
-          } else {
-            this.errorTip = true
+            if (res.msg === 'error') {
+              this.errorTip = true
+            } else {
+              this.errorTip = false
+              this.mdshow = false
+              this.nickName = res.result.userName
+            }
+          }
+        })
+      },
+      logout () {
+        this.$ajax.post('api/users/logout').then(response => {
+          let res = response.data
+          if (res.status === '0') {
+            this.nickName = ''
           }
         })
       }

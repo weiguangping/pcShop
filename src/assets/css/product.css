@@ -423,6 +423,12 @@
   color: #ee7a23;
 }
 
+.loadmore{
+  height: 100px;
+  line-height: 100px;
+  text-align: center;
+}
+
 .filter-nav .sort-up .icon-arrow-short {
   -webkit-transform: rotate(180deg);
   -ms-transform: rotate(180deg);

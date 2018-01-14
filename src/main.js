@@ -7,21 +7,29 @@ import Axios from 'axios'
 import myHeader from '@/components/header'
 import myFooter from '@/components/footer'
 import VueLazyLoad from 'vue-lazyload'
+import infiniteScroll from 'vue-infinite-scroll'
+import Modal from '@/components/Modal'
+import myBread from '@/components/myBread'
+import { currency } from './util/currency'
 
 import '../src/assets/css/login.css'
 
 import fastclick from 'fastclick'
 fastclick.attach(document.body)
+Vue.use(infiniteScroll)
 Vue.use(VueLazyLoad, {
   loading: '/static/loading-svg/loading-bars.svg'
 })
+Vue.filter('currency', currency)
 
 Vue.component('myHeader', myHeader)
 Vue.component('myFooter', myFooter)
+Vue.component('Modal', Modal)
+Vue.component('myBread', myBread)
 // Axios:挂载原型
 Vue.prototype.$ajax = Axios
-Axios.defaults.baseURL = 'http://localhost:3000/api'
-Axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
+// Axios.defaults.baseURL = 'http://localhost:3000/'
+// Axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 // Axios:拦截器操作loadding
 Axios.interceptors.request.use(function (config) {
   return config
