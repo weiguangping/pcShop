@@ -20,9 +20,9 @@
             <!--<a href="/" class="navbar-link">我的账户</a>-->
             <span class="navbar-link" v-if="nickName">{{nickName}}</span>
             <a href="javascript:void(0)" class="navbar-link" @click='loginShow' v-if="!nickName">Login</a>
-            <a href="javascript:void(0)" class="navbar-link" @click='logout'>Logout</a>
+            <a href="javascript:void(0)" class="navbar-link" @click='logout' v-if="nickName">Logout</a>
             <div class="navbar-cart-container">
-              <span class="navbar-cart-count"></span>
+              <span class="navbar-cart-count" v-if="cartCount>0">{{cartCount}}</span>
               <a class="navbar-link navbar-cart-link" href="/#/cart">
                 <svg class="navbar-cart-logo">
                   <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-cart"></use>
@@ -71,19 +71,32 @@
         mdshow: false,
         userName: '',
         userPwd: '',
-        errorTip: false,
-        nickName: ''
+        errorTip: false
       }
     },
     mounted () {
       this.checkLogin()
+      this.getCartCount()
+    },
+    computed: {
+      nickName () {
+        return this.$store.state.nickName
+      },
+      cartCount () {
+        return this.$store.state.cartCount
+      }
     },
     methods: {
       checkLogin () {
         this.$ajax.get('/api/users/checkLogin').then(responce => {
           let res = responce.data
           if (res.status === '0') {
-            this.nickName = res.result
+            // this.nickName = res.result
+            this.$store.commit('updateUserInfo', res.result)
+          } else {
+            if (this.$route.path !== '/') {
+              this.$router.push('/')
+            }
           }
         })
       },
@@ -111,7 +124,8 @@
             } else {
               this.errorTip = false
               this.mdshow = false
-              this.nickName = res.result.userName
+              // this.nickName = res.result.userName
+              this.$store.commit('updateUserInfo', res.result.userName)
             }
           }
         })
@@ -120,7 +134,16 @@
         this.$ajax.post('api/users/logout').then(response => {
           let res = response.data
           if (res.status === '0') {
-            this.nickName = ''
+            // this.nickName = ''
+            this.$store.commit('updateUserInfo', '')
+          }
+        })
+      },
+      getCartCount () {
+        this.$ajax.get('/api/users/getCartCount').then(response => {
+          let res = response.data
+          if (res.status === '0') {
+            this.$store.commit('updateCartCount', res.result)
           }
         })
       }
